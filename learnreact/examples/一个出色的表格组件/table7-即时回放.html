@@ -1,0 +1,256 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="full-screen" content="true" />
+    <meta name="screen-orientation" content="portrait" />
+    <meta name="x5-fullscreen" content="true" />
+    <meta name="360-fullscreen" content="true" />
+    <meta content="telephone=no" name="format-detection" />
+    <style>
+    </style>
+</head>
+<body>
+<div id="app"></div>
+<script src="../../build/react.js"></script> 
+<script src="../../build/react-dom.js"></script>
+<script type="text/javascript">
+    var headers = [
+        "Book", "Author", "Language", "Published", "Sales"
+    ];
+
+    var data = [
+        ["The Lord of the Rings", "J. R. R. Tolkien","English", "1954–1955", "150 million"],
+        ["Le Petit Prince (The Little Prince)", "Antoine de Saint-Exupéry","French", "1943", "140 million"],
+        ["Harry Potter and the Philosopher's Stone", "J. K. Rowling","English", "1997", "107 million"],
+        ["And Then There Were None", "Agatha Christie","English", "1939", "100 million"],
+        ["Dream of the Red Chamber", "Cao Xueqin","Chinese", "1754–1791", "100 million"],
+        ["The Hobbit", "J. R. R. Tolkien","English", "1937", "100 million"],
+        ["She: A History of Adventure", "H. Rider Haggard","English", "1887", "100 million"]
+    ];
+    
+    var Excel = React.createClass({
+        displayName:'Excel',
+        propTypes:{
+            headers:React.PropTypes.arrayOf(
+                React.PropTypes.string
+            ),
+            initialData: React.PropTypes.arrayOf(
+                React.PropTypes.arrayOf(
+                    React.PropTypes.string
+                )
+            )
+        },
+        getInitialState:function(){
+            return {
+                    data: this.props.initialData,
+                    sortby:null,
+                    descending:false,
+                    edit:null, //[行索引，列索引],
+                    search: false
+                }
+        },
+        // 排序方法
+        _sort:function(e){
+            var column = e.target.cellIndex;
+            var data = this.state.data.slice(); 
+            // 默认为升序排列；在当前选中的列索引和之前一样并且当前还不是降序排列时，则进行降序排列
+            var descending = this.state.sortby === column && !this.state.descending;
+            data.sort(function(a,b){
+                return descending
+                    ? (a[column] < b[column] ? 1 : -1)
+                    : (a[column] > b[column] ? 1 : -1)
+            });
+            this._logSetState({
+                data: data,
+                sortby: column,
+                descending: descending
+            })
+        },
+        _showEditor:function(e){
+            this._logSetState({
+                edit:{
+                    row: parseInt(e.target.dataset.row,10),
+                    cell: e.target.cellIndex
+                }
+            })
+        },
+        _save:function(e){
+            // 避免浏览器默认行为（目的是避免网页重新加载）
+            // e.preventDefault();
+            var input = e.target.firstChild;
+            // 复制一份原有数据，避免直接操作this.state
+            var data = this.state.data.slice();
+            // 使用新的值修改原有数据。单元格的行索引和列索引可以通过state的edit属性取得
+            data[this.state.edit.row][this.state.edit.cell] = input.value;
+            // 更新state,使视图重新渲染
+            this._logSetState({
+                edit:null, //完成编辑
+                data:data
+            })
+        },
+        _preSearchData:null,
+        _toggleSearch:function(){
+            if(this.state.search){
+                this._logSetState({
+                    data: this._preSearchData,
+                    search: false
+                })
+                this._preSearchData = null;
+            }else{
+                this._preSearchData = this.state.data;
+                this._logSetState({
+                    search: true
+                })
+            }
+        },
+        _search:function(e){
+            // 通过变化的事件目标（输入框）获取用户输入的字符串
+            var needle = e.target.value.toLowerCase();
+
+            // 如果搜索字符串为空（用户删除了输入的内容），函数会把state修改为缓存中的原始数据；
+            if(!needle){
+                //当搜索字符串被删除时
+                this._logSetState({data: this._preSearchData});
+                return;
+            }
+
+            // 如果搜索字符串非空，则过滤原始数据，并把过滤结果作为data的新state
+            var idx = e.target.dataset.idx; //需要搜索的那一列的索引值
+            var searchdata = this._preSearchData.filter(function(row){
+                return row[idx].toString().toLowerCase().indexOf(needle) > -1;
+            });
+            this._logSetState({data: searchdata});
+        },
+        _log:[],
+        _logSetState:function(newState){
+            //克隆一份原来的state并记录下来
+            this._log.push(JSON.parse(JSON.stringify(
+                this._log.length === 0 ? this.state : newState
+            )))
+            this.setState(newState)
+        },
+        _replay:function(){
+            if(this._log.length === 0){
+                console.warn('No state to replay yet');
+                return;
+            }
+            var idx = -1;
+            var interval = setInterval(function(){
+                idx++;
+                if(idx === this._log.length -1){ //结束
+                    clearInterval(interval);
+                }
+                this._logSetState(this._log[idx]);
+            }.bind(this),1000)
+        },
+        componentDidMount:function(){
+            document.onkeydown = function(e){    
+                if(e.altKey && e.shiftKey && e.keyCode === 82){  //ALT + SHIFT + R (replay)
+                    this._replay();
+                }
+            }.bind(this)
+        },
+        //渲染一行输入框组件
+        _renderSearch:function(){
+            if(!this.state.search){
+                return null;
+            }
+            return (
+                React.DOM.tr({onChange: this._search},
+                        this.props.headers.map(function(_ignore,idx){
+                            return React.DOM.td(
+                                    {key:idx},
+                                    React.DOM.input({
+                                        type:'text',
+                                        'data-idx':idx
+                                    })
+                            )
+                        })
+                )
+            )
+        },
+        //把原来渲染表格部分提取出来
+        _renderTable: function(){
+            return (
+                React.DOM.table(null,
+                    // 点击表头时触发排序事件
+                    React.DOM.thead({onClick:this._sort},
+                        React.DOM.tr(null,
+                            this.props.headers.map(function(title,idx){
+                                if(this.state.sortby === idx){
+                                    title += this.state.descending ? '\u2191' : '\u2193'
+                                }
+                                return React.DOM.th({key:idx},title)
+                            },this)
+                        )
+                    ),
+                    React.DOM.tbody({onDoubleClick: this._showEditor},
+                        this._renderSearch(),
+                        this.state.data.map(function(row,rowidx){
+                            return (
+                                React.DOM.tr({key:rowidx},
+                                    row.map(function(cell,idx){
+                                        var content = cell;
+                                        // 如果idx和rowidx的值与当前单元格匹配，则把content变为一个输入框，否则只需展示文本内容。
+
+                                        // 获取编辑状态的state
+                                        var edit = this.state.edit;
+                                        // 判断edit属性是否已经设置。如果是，则判断当前单元格是否为待编辑单元格
+                                        if(edit && edit.row === rowidx && edit.cell === idx){
+                                            //如果匹配到目标单元格，就创建一个表单和一个输入框，并把内容填充到输入框中
+                                            content = React.DOM.form(
+                                                // 回车触发保存事件
+                                                {onSubmit: this._save},
+                                                React.DOM.input({
+                                                    type:'text',
+                                                    defaultValue:content
+                                                })
+                                            )
+                                        }
+                                        return React.DOM.td({
+                                            key:idx,
+                                            'data-row': rowidx
+                                        },content)
+                                    },this)
+                                )
+                            )
+                        },this) 
+                    )
+                )
+            )
+        },
+        //渲染按钮
+        _renderToolbar:function(){
+            return React.DOM.button(
+                {
+                    onClick: this._toggleSearch,
+                    className: 'toolbar'
+                 },
+                'search'
+            )
+        },
+        // render函数返回一个div组件，包含两个子元素：工具栏和表格（目前工具栏仅需要渲染一个按钮）
+        render:function(){
+            return (
+                React.DOM.div(null,
+                        this._renderToolbar(),
+                        this._renderTable()
+                )
+            )
+        }
+    });
+    ReactDOM.render(
+        React.createElement(Excel,{
+            headers: headers,
+            initialData: data,
+        }),
+        document.getElementById('app')
+    );
+</script>
+</body>
+
+</html>

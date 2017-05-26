@@ -1,0 +1,90 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="full-screen" content="true" />
+    <meta name="screen-orientation" content="portrait" />
+    <meta name="x5-fullscreen" content="true" />
+    <meta name="360-fullscreen" content="true" />
+    <meta content="telephone=no" name="format-detection" />
+    <style>
+    </style>
+</head>
+<body>
+<div id="app"></div>
+<script src="../../build/react.js"></script>
+<script src="../../build/react-dom.js"></script>
+<script type="text/javascript">
+    // 计数器组件
+    var Counter = React.createClass({
+        name:'Counter',
+        // mixins:[logMixin],
+        propTypes:{
+            count: React.PropTypes.number.isRequired,
+        },
+        // 这个方法在componentWillUpdate之前触发，给你一个机会返回false以取消更新组件，意味着render方法将不会调用。这在性能型的应用场景中非常有用
+        shouldComponentUpdate:function(newProps,newState){
+            console.log(newProps.count != this.props.count);
+            return newProps.count != this.props.count;
+        },
+        render:function(){
+            console.log(this.name + '::render Counter');
+            return React.DOM.span(null,this.props.count);
+        }
+    });
+    // 父组件
+    var TextAreaCounter = React.createClass(
+        {
+            propTypes:{
+                text: React.PropTypes.string,
+            },
+            getInitialState: function(){
+                return {
+                    text: this.props.text
+                }
+            },
+            _textChange:function(ev){
+                this.setState({
+                    text: ev.target.value
+                });
+            },
+            name:'TextAreaCounter',
+            // mixins:[logMixin],
+            render: function(){
+                console.log(this.name + '::render TextAreaCounter');
+                var counter = null;
+                if(this.state.text.length > 0){
+                    counter = React.DOM.h3(null,
+                        React.createElement(Counter,{
+                            count: this.state.text.length
+                        })
+                    )
+                }
+                return React.DOM.div(null,
+                    React.DOM.textarea(
+                        {
+                           value: this.state.text,
+                           onChange: this._textChange,
+                        } 
+                    ),
+                    counter
+                )
+            }
+        }
+    );
+    ReactDOM.render(
+        React.createElement(
+            TextAreaCounter,{
+                text:'Bob'
+            }
+        ),
+        document.getElementById('app')
+    );
+
+</script>
+</body>
+
+</html>

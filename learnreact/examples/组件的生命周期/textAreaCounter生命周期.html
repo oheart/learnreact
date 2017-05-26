@@ -1,0 +1,92 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="full-screen" content="true" />
+    <meta name="screen-orientation" content="portrait" />
+    <meta name="x5-fullscreen" content="true" />
+    <meta name="360-fullscreen" content="true" />
+    <meta content="telephone=no" name="format-detection" />
+    <style>
+    </style>
+</head>
+<body>
+<div id="app"></div>
+<script src="../../build/react.js"></script>
+<script src="../../build/react-dom.js"></script>
+<script type="text/javascript">
+    var TextAreaCounter = React.createClass(
+        {
+            propTypes:{
+                text: React.PropTypes.string,
+            },
+            getInitialState: function(){
+                return {
+                    text: this.props.text
+                }
+            },
+            _textChange:function(ev){
+                this.setState({
+                    text: ev.target.value
+                });
+            },
+            _log:function(methodName,args){
+                console.log(methodName,args);
+            },
+            // 这个方法在componentWillUpdate之前触发，给你一个机会返回false以取消更新组件，意味着render方法将不会调用。这在性能型的应用场景中非常有用
+            shouldComponentUpdate:function(newProps,newState){
+                this._log('shouldComponentUpdate',arguments);
+                return true;
+            },
+            // 当你的组件再次渲染时，在render()方法前调用（在组件的props或者state发生改变时会触发该方法）
+            componentWillUpdate:function(){
+                this._log('componentWillUpdate',arguments);
+            },
+            // 在render()函数执行完毕，且更新的组件已经同步到DOM后立即调用。该方法不会再初始化渲染时触发
+            componentDidUpdate:function(){
+                this._log('compnentDidUpdate',arguments);
+            },
+            // 在新节点插入DOM结构前触发
+            componentWillMount:function(){
+                this._log('componentWillMount',arguments);
+            },
+            // 在新节点插入DOM结构之后触发
+            componentDidMount:function(){
+                this._log('componentDidMount',arguments);
+                // 此时组件已经渲染，可以进行各种初始化工作
+                var ReactDom = ReactDOM.findDOMNode(this);
+                console.log(ReactDom);
+            },
+            // 在组件从DOM中移除时立即触发
+            componentWillUnmount:function(){
+                this._log('componentWillUnmount',arguments);
+            },
+            render: function(){
+                return React.DOM.div(null,
+                    React.DOM.textarea(
+                        {
+                           value: this.state.text,
+                           onChange: this._textChange,
+                        } 
+                    ),
+                    React.DOM.h3(null,this.state.text.length)
+                )
+            }
+        }
+    );
+    ReactDOM.render(
+        React.createElement(
+            TextAreaCounter,{
+                text:'Bobe'
+            }
+        ),
+        document.getElementById('app')
+    );
+
+</script>
+</body>
+
+</html>
