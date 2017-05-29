@@ -1,0 +1,56 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="full-screen" content="true" />
+    <meta name="screen-orientation" content="portrait" />
+    <meta name="x5-fullscreen" content="true" />
+    <meta name="360-fullscreen" content="true" />
+    <meta content="telephone=no" name="format-detection" />
+    <style>
+    </style>
+</head>
+<body>
+<div id="app1"></div>
+<div id="app2"></div>
+<div id="app3"></div>
+<div id="app4"></div>
+<script src="../../build/react.js"></script> 
+<script src="../../build/react-dom.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js">
+</script>
+<script type="text/babel">
+    /*
+    在React中，value属性总是和文本输入框最新内容保持一致。如果你想指定默认值，可以使用defaultValue属性
+    */
+    function log(event){
+        console.log("value: ", event.target.value);
+        console.log("defaultValue: " + event.target.defaultValue);
+    }
+   ReactDOM.render(
+       <textarea defaultValue="hello\nworld" onChange = {log}/>,
+       document.getElementById('app1')
+   )
+   ReactDOM.render(
+       <textarea defaultValue={"hello\nworld"} onChange={log}/>,
+       document.getElementById('app2')
+   )
+   ReactDOM.render(
+       <textarea onChange={log}>hello
+world
+        </textarea>,
+        document.getElementById('app3')           
+   )
+   ReactDOM.render(
+       <textarea onChange={log}>{"hello\n\
+world"}
+       </textarea>,
+       document.getElementById('app4')
+   )
+</script>
+</body>
+
+</html>

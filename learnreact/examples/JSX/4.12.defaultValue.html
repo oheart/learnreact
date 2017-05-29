@@ -15,29 +15,22 @@
 </head>
 <body>
 <div id="app"></div>
-<script src="../../build/react.js"></script>
+<script src="../../build/react.js"></script> 
 <script src="../../build/react-dom.js"></script>
-<script type="text/javascript">
-    ReactDOM.render(
-        React.DOM.h1(
-            {id:'my-heading'},
-            React.DOM.span(null,
-                React.DOM.em(null,'Hell'),
-                'o'
-            ),
-            'world'
-        ),
-        document.getElementById('app')
-    );
-
-
-    ReactDOM.render(
-        <h1 id="my-heading">
-            <span><em>Hell</em>o</span>world!
-        </h1>,
-        document.getElementById('app')
-    )
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js">
+</script>
+<script type="text/babel">
+    /*
+    在React中，value属性总是和文本输入框最新内容保持一致。如果你想指定默认值，可以使用defaultValue属性
+    */
+    function log(event){
+        console.log("value: ", event.target.value);
+        console.log("defaultValue: " + event.target.defaultValue);
+    }
+   ReactDOM.render(
+       <input defaultValue="hello" onChange = {log}/>,
+       document.getElementById('app')
+   )
 </script>
 </body>
 

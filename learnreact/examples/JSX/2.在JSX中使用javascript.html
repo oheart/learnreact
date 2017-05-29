@@ -1,0 +1,57 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="full-screen" content="true" />
+    <meta name="screen-orientation" content="portrait" />
+    <meta name="x5-fullscreen" content="true" />
+    <meta name="360-fullscreen" content="true" />
+    <meta content="telephone=no" name="format-detection" />
+    <style>
+    </style>
+</head>
+<body>
+<div id="app"></div>
+<script src="../../build/react.js"></script> 
+<script src="../../build/react-dom.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js"></script>
+<script type="text/babel">
+    function formatName(user){
+        return user.firstName + '' + user.lastName;
+    }
+    const user = {
+        firstName:'Harper',
+        lastName:'Perez',
+        avatarUrl:'https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=16719931,2799566669&fm=23&gp=0.jpg'
+    }
+    /*const element = (
+        <h1>
+            Hello,{formatName(user)}!
+        </h1>
+    )*/
+    /*
+    const element = (
+        <div tabIndex="0"></div>
+    ) */
+    /*
+    const element = <img src={user.avatarUrl}></img>
+    */
+    /*const element  = <h1>{user.lastName} &raquo; </h1>*/
+    /*const element = <h2>{"More info &raquo"}</h2>*/
+    /*右指双尖括号对应的编码是\u00bb*/
+    const RAQUO = '\u00bb';
+    const element = <div>
+                        <h2>{"More info" + RAQUO}</h2>
+                        <h2>{"More info"}{RAQUO}</h2>
+                    </div>
+    ReactDOM.render(
+        element,
+        document.getElementById('app')
+    );
+</script>
+</body>
+
+</html>
