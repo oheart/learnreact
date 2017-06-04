@@ -9,6 +9,8 @@ import Suggest from './components/Suggest';
 import Rating from './components/Rating';
 import FormInput from './components/FormInput';
 import Form from './components/Form';
+import Actions from './components/Actions';
+import Dialog from './components/Dialog';
 
 
 
@@ -119,7 +121,27 @@ ReactDOM.render(
             ]}
             initialData = {{rateme:4,freetext:'hello'}}
             />
-        
+        {/*action*/}
+        <h2>Actions</h2>
+        <div>
+            <Actions onAction={type => alert(type)}/>
+        </div>
+
+        {/*dialog*/}
+        <h2>Dialog</h2>
+        <Dialog
+            header="Out of the box example"
+            onAction={type => alert(type)}>
+            Hello,dialog!
+        </Dialog>
+        <Dialog
+            header="No cancel,custom button"
+            hasCancel={false}
+            conirmLabel="whatever"
+            onAction={type => alert(type)}>
+            Anything goes here,see:
+            <Button>A button</Button>
+        </Dialog>
 
     </div>,
     document.getElementById('pad')

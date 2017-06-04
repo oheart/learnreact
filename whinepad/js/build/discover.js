@@ -32,6 +32,14 @@ var _Form = require('./components/Form');
 
 var _Form2 = _interopRequireDefault(_Form);
 
+var _Actions = require('./components/Actions');
+
+var _Actions2 = _interopRequireDefault(_Actions);
+
+var _Dialog = require('./components/Dialog');
+
+var _Dialog2 = _interopRequireDefault(_Dialog);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 _reactDom2.default.render(_react2.default.createElement(
@@ -231,5 +239,47 @@ _reactDom2.default.render(_react2.default.createElement(
     _react2.default.createElement(_Form2.default, {
         fields: [{ label: 'Rating', type: 'rating', id: 'rateme' }, { label: 'Greeting', id: 'freetext' }],
         initialData: { rateme: 4, freetext: 'hello' }
-    })
+    }),
+    _react2.default.createElement(
+        'h2',
+        null,
+        'Actions'
+    ),
+    _react2.default.createElement(
+        'div',
+        null,
+        _react2.default.createElement(_Actions2.default, { onAction: function onAction(type) {
+                return alert(type);
+            } })
+    ),
+    _react2.default.createElement(
+        'h2',
+        null,
+        'Dialog'
+    ),
+    _react2.default.createElement(
+        _Dialog2.default,
+        {
+            header: 'Out of the box example',
+            onAction: function onAction(type) {
+                return alert(type);
+            } },
+        'Hello,dialog!'
+    ),
+    _react2.default.createElement(
+        _Dialog2.default,
+        {
+            header: 'No cancel,custom button',
+            hasCancel: false,
+            conirmLabel: 'whatever',
+            onAction: function onAction(type) {
+                return alert(type);
+            } },
+        'Anything goes here,see:',
+        _react2.default.createElement(
+            _Button2.default,
+            null,
+            'A button'
+        )
+    )
 ), document.getElementById('pad'));

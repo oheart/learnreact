@@ -20852,6 +20852,63 @@ module.exports = traverseAllChildren;
 module.exports = require('./lib/React');
 
 },{"./lib/React":159}],183:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _react = require("react");
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+var Actions = function Actions(props) {
+    return _react2.default.createElement(
+        "div",
+        { className: "Actions" },
+        _react2.default.createElement(
+            "span",
+            {
+                tabIndex: "0",
+                className: "ActionsInfo",
+                title: "More info",
+                onClick: props.onAction.bind(null, 'info') },
+            "\u2139"
+        ),
+        _react2.default.createElement(
+            "span",
+            {
+                tabIndex: "0",
+                className: "ActionsEdit",
+                title: "Edit",
+                onClick: props.onAction.bind(null, 'edit')
+            },
+            "\u2710"
+        ),
+        _react2.default.createElement(
+            "span",
+            {
+                tabIndex: "0",
+                className: "ActionDelete",
+                title: "Delete",
+                onClick: props.onAction.bind(null, 'delete') },
+            "x"
+        )
+    );
+};
+
+Actions.propType = {
+    onAction: _react.PropTypes.func
+};
+
+Actions.defaultProps = {
+    onAction: function onAction() {}
+};
+
+exports.default = Actions;
+},{"react":182}],184:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -20887,7 +20944,111 @@ Button.propTypes = {
 };
 
 exports.default = Button;
-},{"classnames":2,"react":182}],184:[function(require,module,exports){
+},{"classnames":2,"react":182}],185:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _Button = require('./Button');
+
+var _Button2 = _interopRequireDefault(_Button);
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Dialog = function (_Component) {
+    _inherits(Dialog, _Component);
+
+    function Dialog() {
+        _classCallCheck(this, Dialog);
+
+        return _possibleConstructorReturn(this, (Dialog.__proto__ || Object.getPrototypeOf(Dialog)).apply(this, arguments));
+    }
+
+    _createClass(Dialog, [{
+        key: 'componentWillUnmout',
+        value: function componentWillUnmout() {
+            document.body.classList.remove('DialogModalOpen');
+        }
+    }, {
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            if (this.props.modal) {
+                document.body.classList.add('DialogModalOpen');
+            }
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            return _react2.default.createElement(
+                'div',
+                { className: this.props.modal ? 'Dialog DialogModal' : 'Dialog' },
+                _react2.default.createElement(
+                    'div',
+                    { className: this.props.modal ? 'DialogWrap' : null },
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'DialogHeader' },
+                        this.props.header
+                    ),
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'DialogBody' },
+                        this.props.children
+                    ),
+                    _react2.default.createElement(
+                        'div',
+                        { className: 'DialogFooter' },
+                        this.props.hasCancel ? _react2.default.createElement(
+                            'span',
+                            {
+                                className: 'DialogDismiss',
+                                onClick: this.props.onAction.bind(this, 'dismiss') },
+                            'Cancel'
+                        ) : null,
+                        _react2.default.createElement(
+                            _Button2.default,
+                            {
+                                onClick: this.props.onAction.bind(this, this.props.hasCancel ? 'confirm' : 'dismiss') },
+                            this.props.confirmLabel
+                        )
+                    )
+                )
+            );
+        }
+    }]);
+
+    return Dialog;
+}(_react.Component);
+
+Dialog.propTypes = {
+    header: _react.PropTypes.string.isRequired,
+    confirmLabel: _react.PropTypes.string,
+    modal: _react.PropTypes.bool,
+    onAction: _react.PropTypes.func,
+    hasCancel: _react.PropTypes.bool
+};
+Dialog.defaultProps = {
+    confirmLabel: 'ok',
+    modal: false,
+    onAction: function onAction() {},
+    hasCancel: true
+};
+exports.default = Dialog;
+},{"./Button":184,"react":182}],186:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -21001,7 +21162,7 @@ Form.propTypes = {
 };
 
 exports.default = Form;
-},{"./FormInput":185,"./Rating":187,"react":182}],185:[function(require,module,exports){
+},{"./FormInput":187,"./Rating":189,"react":182}],187:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -21087,7 +21248,7 @@ FormInput.propTypes = {
 };
 
 exports.default = FormInput;
-},{"./Rating":187,"./Suggest":188,"react":182}],186:[function(require,module,exports){
+},{"./Rating":189,"./Suggest":190,"react":182}],188:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -21128,7 +21289,7 @@ var Logo = function (_React$Component) {
 }(_react2.default.Component);
 
 exports.default = Logo;
-},{"react":182}],187:[function(require,module,exports){
+},{"react":182}],189:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -21250,7 +21411,7 @@ Rating.defaultProps = {
 };
 
 exports.default = Rating;
-},{"classnames":2,"react":182}],188:[function(require,module,exports){
+},{"classnames":2,"react":182}],190:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -21325,7 +21486,7 @@ Suggest.propTypes = {
 };
 
 exports.default = Suggest;
-},{"react":182}],189:[function(require,module,exports){
+},{"react":182}],191:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
@@ -21359,6 +21520,14 @@ var _FormInput2 = _interopRequireDefault(_FormInput);
 var _Form = require('./components/Form');
 
 var _Form2 = _interopRequireDefault(_Form);
+
+var _Actions = require('./components/Actions');
+
+var _Actions2 = _interopRequireDefault(_Actions);
+
+var _Dialog = require('./components/Dialog');
+
+var _Dialog2 = _interopRequireDefault(_Dialog);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21559,6 +21728,48 @@ _reactDom2.default.render(_react2.default.createElement(
     _react2.default.createElement(_Form2.default, {
         fields: [{ label: 'Rating', type: 'rating', id: 'rateme' }, { label: 'Greeting', id: 'freetext' }],
         initialData: { rateme: 4, freetext: 'hello' }
-    })
+    }),
+    _react2.default.createElement(
+        'h2',
+        null,
+        'Actions'
+    ),
+    _react2.default.createElement(
+        'div',
+        null,
+        _react2.default.createElement(_Actions2.default, { onAction: function onAction(type) {
+                return alert(type);
+            } })
+    ),
+    _react2.default.createElement(
+        'h2',
+        null,
+        'Dialog'
+    ),
+    _react2.default.createElement(
+        _Dialog2.default,
+        {
+            header: 'Out of the box example',
+            onAction: function onAction(type) {
+                return alert(type);
+            } },
+        'Hello,dialog!'
+    ),
+    _react2.default.createElement(
+        _Dialog2.default,
+        {
+            header: 'No cancel,custom button',
+            hasCancel: false,
+            conirmLabel: 'whatever',
+            onAction: function onAction(type) {
+                return alert(type);
+            } },
+        'Anything goes here,see:',
+        _react2.default.createElement(
+            _Button2.default,
+            null,
+            'A button'
+        )
+    )
 ), document.getElementById('pad'));
-},{"./components/Button":183,"./components/Form":184,"./components/FormInput":185,"./components/Logo":186,"./components/Rating":187,"./components/Suggest":188,"react":182,"react-dom":31}]},{},[189]);
+},{"./components/Actions":183,"./components/Button":184,"./components/Dialog":185,"./components/Form":186,"./components/FormInput":187,"./components/Logo":188,"./components/Rating":189,"./components/Suggest":190,"react":182,"react-dom":31}]},{},[191]);
